@@ -59,32 +59,32 @@ Vagrant.configure("2") do |config|
       path: "scripts/metrics-server.sh"
   end
 
-  (1..NUM_WORKER_NODES).each do |i|
-    config.vm.define "node0#{i}" do |node|
-      node.vm.hostname = "worker-node0#{i}"
-      node.vm.network "private_network", ip: IP_NW + "#{IP_START + i}"
-      if settings["shared_folders"]
-        settings["shared_folders"].each do |shared_folders|
-          controlplane.vm.synced_folder shared_folder["host_path"], shared_folder["vm_path"]
-        end
-      end
-      node.vm.provider "virtualbox" do |vb|
-        vb.cpus = settings["nodes"]["workers"]["cpu"]
-        vb.memory = settings["nodes"]["workers"]["memory"]
-        if settings["cluster_name"] and settings["cluster_name"] != ""
-          vb.customize ["modifyvm", :id, "--groups", ("/" + settings["cluster_name"])]
-        end
-      end
-      node.vm.provision "shell",
-        env: {
-          "DNS_SERVERS" => settings["network"]["dns_servers"].join(" "),
-          "ENVIRONMENT" => settings["environment"],
-          "KUBERNETES_VERSION" => settings["software"]["kubernetes"],
-          "KUBERNETES_VERSION_SHORT" => settings["software"]["kubernetes"][0..3],
-          "OS" => settings["software"]["os"]
-        },
-        path: "scripts/common.sh"
-        node.vm.provision "shell", path: "scripts/node.sh"
-    end
-  end
+  # (1..NUM_WORKER_NODES).each do |i|
+  #   config.vm.define "node0#{i}" do |node|
+  #     node.vm.hostname = "worker-node0#{i}"
+  #     node.vm.network "private_network", ip: IP_NW + "#{IP_START + i}"
+  #     if settings["shared_folders"]
+  #       settings["shared_folders"].each do |shared_folders|
+  #         controlplane.vm.synced_folder shared_folder["host_path"], shared_folder["vm_path"]
+  #       end
+  #     end
+  #     node.vm.provider "virtualbox" do |vb|
+  #       vb.cpus = settings["nodes"]["workers"]["cpu"]
+  #       vb.memory = settings["nodes"]["workers"]["memory"]
+  #       if settings["cluster_name"] and settings["cluster_name"] != ""
+  #         vb.customize ["modifyvm", :id, "--groups", ("/" + settings["cluster_name"])]
+  #       end
+  #     end
+  #     node.vm.provision "shell",
+  #       env: {
+  #         "DNS_SERVERS" => settings["network"]["dns_servers"].join(" "),
+  #         "ENVIRONMENT" => settings["environment"],
+  #         "KUBERNETES_VERSION" => settings["software"]["kubernetes"],
+  #         "KUBERNETES_VERSION_SHORT" => settings["software"]["kubernetes"][0..3],
+  #         "OS" => settings["software"]["os"]
+  #       },
+  #       path: "scripts/common.sh"
+  #       node.vm.provision "shell", path: "scripts/node.sh"
+  #   end
+  # end
 end

@@ -37,11 +37,17 @@ EOF
 
 sudo sysctl --system
 sudo apt-get update -y
-apt-get install -y software-properties-common curl apt-transport-https ca-certificates bash-completion
+apt-get install -y software-properties-common curl apt-transport-https ca-certificates bash-completion tar
 
 # kubectl autocompletion
 echo 'alias k=kubectl' >>~/.bashrc
 echo 'complete -o default -F __start_kubectl k' >>~/.bashrc
+
+
+# # containerd
+# wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.6.9-1_amd64.deb
+# sudo dpkg -i ./containerd.io_1.6.9-1_amd64.deb
+
 
 curl -fsSL https://pkgs.k8s.io/addons:/cri-o:/prerelease:/main/deb/Release.key |
     gpg --dearmor -o /etc/apt/keyrings/cri-o-apt-keyring.gpg
@@ -53,7 +59,9 @@ sudo apt-get install -y cri-o
 
 sudo systemctl daemon-reload
 sudo systemctl enable crio --now
+# sudo systemctl enable containerd --now
 sudo systemctl start crio.service
+# sudo systemctl start containerd.service
 
 echo "CRI runtime installed successfully"
 
